@@ -2,16 +2,16 @@
 import re
 import requests
 
+# -------------------配置信息------------------------------------------
 
-# 正则的匹配信息返回
-def re_get(str, retext):
-    pattern = re.compile(retext)
-    return re.findall(pattern,str)
+
+# 文件路径
+file_path = r"C:\Users\NOBB\Documents\NetSarang Computer\7\Xshell\Sessions\矿.cpolar.xsh"
 
 
 # 正则的匹配信息
 re_list = {
-    # 替换cookie里最重要的数据
+    # 替换cookie里最重要的 cf_bm 平时只会边这个
     "cookie_info":r'(?<=__cf_bm=).*?(?=;)',
 
     # 匹配登陆后网页ssh信息
@@ -25,7 +25,25 @@ re_list = {
 }
 
 
-print(1)
+# cookie
+# cookie = "Hm_lvt_0838dad5461d14f63bdf207a43a54c29=1671014559; _ga=GA1.2.1292063761.1668412409; session=67ce1ba4-9fdf-4684-aae1-70c07559b566; _gid=GA1.2.115640722.1673237951; Hm_lpvt_0838dad5461d14f63bdf207a43a54c29=1673341442; __cf_bm=K1Ms0u5.cd4N1Zd0dr4DYIw.4NodmE_e1WBN5AU11Hg-1673341138-0-AWLcqeX0h2BTO2dssPsQhLhO9H9XcgdPRhURiE06260c0HIp6cW942QDfZ4mnfwrOHiOldhaBuFl3a0i3HqMBPq7vSvFLKJVm5wBatpWKM/X0pojMh74P45+Fj9SRfRRDjHYMr3Zr9jOxrL0bYlSCzc=; _gat_gtag_UA_128397857_1=1"
+cookie = "Hm_lvt_0838dad5461d14f63bdf207a43a54c29=1671014559; _ga=GA1.2.1292063761.1668412409; session=67ce1ba4-9fdf-4684-aae1-70c07559b566; _gid=GA1.2.115640722.1673237951; Hm_lpvt_0838dad5461d14f63bdf207a43a54c29=1673341442; __cf_bm={0}; _gat_gtag_UA_128397857_1=1"
+
+
+# -------------------配置信息------------------------------------------
+
+
+
+
+# 正则的匹配信息返回
+def re_get(str, retext):
+    pattern = re.compile(retext)
+    return re.findall(pattern,str)
+
+
+
+
+print("start")
 # -------------------登录页面------------------------------------------
 url = "https://dashboard.cpolar.com/login"
 
@@ -74,27 +92,29 @@ requests.post(url,data).headers['set-cookie']的方法，确实得到了USER_SES
 
 
 
+# ------------------- 获取 set-cookie ------------------------------------------
 
 
 # 匹配出 set cookie  只有新设备cookie失效后登录才会有setcookie
-# url = "https://dashboard.cpolar.com/cdn-cgi/challenge-platform/h/b/cv/result/7872c311a80fceb5"
-# headers = {
-# 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+url = "https://dashboard.cpolar.com/cdn-cgi/challenge-platform/h/b/cv/result/7872c311a80fceb5"
+headers = {
+'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
 
-# }
-# # 请求参数
-# res = requests.post(url, headers=headers)
-# cookie_info =  re_get(str(res.headers), re_list["cookie_info"])[0]
-# print(cookie_info)
+}
+# 请求参数
+res = requests.post(url, headers=headers)
+cookie_info =  re_get(str(res.headers), re_list["cookie_info"])[0]
+print("set-cookie的值：\n", cookie_info)
 
-
+cookie = cookie.format(cookie_info)
+print("\n完整的cookie：\n",cookie)
 # -------------------信息解析------------------------------------------
 
 
 url = "https://dashboard.cpolar.com/status"
 headers = {
 "Cookie":"Hm_lvt_0838dad5461d14f63bdf207a43a54c29=1671014559; _ga=GA1.2.1292063761.1668412409; session=67ce1ba4-9fdf-4684-aae1-70c07559b566; _gid=GA1.2.115640722.1673237951; Hm_lpvt_0838dad5461d14f63bdf207a43a54c29=1673327086; __cf_bm=gOT1lUyUve6P6OK3Gw7bxpmsZjhK8vDMW5VsliRK5hw-1673327088-0-AbNh8aEkXeH4MjaOKIPEE/DcQrbHtCFcd15kZvE9Karnz4fIUTYx9a4sN56Hhg6j9LdxHBocsTwQU904YA5/3MZzPC1NzXYMo9R6TstmpzbcdZJf2Rd0ntsYTLl/ILwFTz9Ts1+oELwlUkuQDSi7DYw=; _gat_gtag_UA_128397857_1=1;",
-"Cookie":"Hm_lvt_0838dad5461d14f63bdf207a43a54c29=1671014559; _ga=GA1.2.1292063761.1668412409; session=67ce1ba4-9fdf-4684-aae1-70c07559b566; _gid=GA1.2.115640722.1673237951; Hm_lpvt_0838dad5461d14f63bdf207a43a54c29=1673341442; __cf_bm=K1Ms0u5.cd4N1Zd0dr4DYIw.4NodmE_e1WBN5AU11Hg-1673341138-0-AWLcqeX0h2BTO2dssPsQhLhO9H9XcgdPRhURiE06260c0HIp6cW942QDfZ4mnfwrOHiOldhaBuFl3a0i3HqMBPq7vSvFLKJVm5wBatpWKM/X0pojMh74P45+Fj9SRfRRDjHYMr3Zr9jOxrL0bYlSCzc=; _gat_gtag_UA_128397857_1=1",
+"Cookie":cookie,
 
 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
 
@@ -107,13 +127,12 @@ ssh_info =  re_get(res, re_list["ssh_info"])[0]
 
 # 用正则匹配出来 IP 和 端口
 ssh_ip =  re_get(ssh_info, re_list["ssh_ip"])[0]
-ssh_port =  re_get(ssh_info, re_list["ssh_port"])[0][1::]
+ssh_port =  re_get(ssh_info, re_list["ssh_port"])[0][1::] # 这里多匹配了个冒号
 print(ssh_port, ssh_ip)
 
 
 # -------------------文件解析------------------------------------------
-# 文件路径
-file_path = r"C:\Users\NOBB\Documents\NetSarang Computer\7\Xshell\Sessions\矿.cpolar.xsh"
+
 
 # 读取数据 utf-16 格式
 with open(file_path, "r", encoding="utf-16") as f:
