@@ -1,0 +1,2 @@
+# change_xshell_cpolar_ip
+修改xshell的连接文件，不用每次都去cpolar上面复制ssh的账户或者密码
